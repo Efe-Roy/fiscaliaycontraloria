@@ -20,7 +20,7 @@ class Shop(models.Model):
     user = models.ForeignKey(User, related_name='products', on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
     image = models.ImageField(upload_to='shop_images/')
-    description = models.TextField()
+    description = models.TextField(blank=True, null=True)
     stars = models.IntegerField(blank=True, null=True)
     reviews = models.CharField(max_length=255, blank=True, null=True)
     category = models.ForeignKey(Category, blank=True, null=True, on_delete=models.CASCADE)
