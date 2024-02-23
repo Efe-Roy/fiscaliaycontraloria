@@ -34,7 +34,7 @@ class Shop(models.Model):
 class Item(models.Model):
     shop = models.ForeignKey(Shop, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
-    description = models.TextField()
+    description = models.TextField(blank=True, null=True)
     price = models.FloatField()
     discount_price = models.FloatField(blank=True, null=True)
     image = models.ImageField(upload_to='item_images/')
