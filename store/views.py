@@ -45,7 +45,7 @@ class ItemListView(ListCreateAPIView):
     pagination_class = CustomPagination
 
     def get_queryset(self):
-        queryset = Item.objects.all()
+        queryset = Item.objects.all().order_by("-id")
 
         # Filter based on request parameters
         name = self.request.query_params.get('name', None)
