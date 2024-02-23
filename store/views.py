@@ -51,6 +51,11 @@ class ItemListView(ListCreateAPIView):
         name = self.request.query_params.get('name', None)
         if name:
             queryset = queryset.filter(name__icontains=name)
+
+        shop_id = self.request.query_params.get('shop_id', None)
+        if shop_id:
+            queryset = queryset.filter(shop_id=shop_id)
+        
         return queryset
 
 
