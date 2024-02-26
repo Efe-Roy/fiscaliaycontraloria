@@ -38,7 +38,6 @@ class OrderItemSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'item',
-            'shop',
             'quantity',
             'final_price'
         )
@@ -91,8 +90,12 @@ class ItemDetailSerializer(serializers.ModelSerializer):
             'image',
         )
 
+    # def get_category(self, obj):
+    #     return obj.get_category_display()
+    
     def get_category(self, obj):
-        return obj.get_category_display()
+        return CategorySerializer(obj.category).data
+
 
     def get_label(self, obj):
         return obj.get_label_display()

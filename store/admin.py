@@ -2,7 +2,7 @@ from django.contrib import admin
 
 from .models import (
     Item, OrderItem, Order, Payment, Coupon, Refund,
-    Address, Shop
+    Address, Shop, Category
 )
 
 
@@ -57,6 +57,7 @@ class AddressAdmin(admin.ModelAdmin):
     search_fields = ['user', 'street_address', 'apartment_address', 'zip']
 
 
+admin.site.register(Category)
 admin.site.register(Shop)
 admin.site.register(Item)
 admin.site.register(OrderItem)

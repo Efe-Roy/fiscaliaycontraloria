@@ -25,7 +25,7 @@ urlpatterns = [
      path('shops/', ShopListView.as_view()),
      path('products/', ItemListView.as_view(), name='product-list'),
      path('products/<pk>/', ItemDetailView.as_view(), name='product-detail'),
-     path('add-to-cart/', AddToCartView.as_view(), name='add-to-cart'),
+     path('add-to-cart/<pk>/', AddToCartView.as_view(), name='add-to-cart'),
      path('order-summary/', OrderDetailView.as_view(), name='order-summary'),
      path('add-coupon/', AddCouponView.as_view(), name='add-coupon'),
      path('order-items/<pk>/delete/',

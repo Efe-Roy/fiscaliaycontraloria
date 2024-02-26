@@ -102,13 +102,8 @@ class OrderItemDeleteView(DestroyAPIView):
 
 
 class AddToCartView(APIView):
-    def post(self, request, *args, **kwargs):
-        ID = request.data.get('id', None)
-        # variations = request.data.get('variations', [])
-        if ID is None:
-            return Response({"message": "Invalid request"}, status=HTTP_400_BAD_REQUEST)
-
-        item = get_object_or_404(Item, id=ID)
+    def post(self, request, pk, *args, **kwargs):
+        item = get_object_or_404(Item, id=pk)
 
         order_item_qs = OrderItem.objects.filter(
             item=item,
@@ -134,7 +129,6 @@ class AddToCartView(APIView):
             if not order.items.filter(item__id=order_item.id).exists():
                 order.items.add(order_item)
                 return Response(status=HTTP_200_OK)
-
         else:
             ordered_date = timezone.now()
             order = Order.objects.create(
