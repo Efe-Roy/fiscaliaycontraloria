@@ -1,5 +1,6 @@
 # from django_countries.serializer_fields import CountryField
 from rest_framework import serializers
+from Auth.serializers import UserSerializer
 from .models import (
     Address, Item, Order, OrderItem, Coupon, Payment, Shop, Category
 )
@@ -12,22 +13,28 @@ class CategorySerializer(serializers.ModelSerializer):
 class CouponSerializer(serializers.ModelSerializer):
     class Meta:
         model = Coupon
-        fields = ['id', 'code', 'amount']
+        fields = ['id', 'code', 'amount', 'shop']
 
 class ItemSerializer(serializers.ModelSerializer):
     shop = serializers.SerializerMethodField()
 
     class Meta:
         model = Item
-        fields = ['id', 'name', 'description', 'price', 'discount_price', 'image', 'shop']
+        fields = ['id', 'name', 'description', 'price', 'inventory', 'discount_price', 'image', 'shop']
 
     def get_shop(self, obj):
         return ShopSerializer(obj.shop).data
 
 class ShopSerializer(serializers.ModelSerializer):
+    user = serializers.SerializerMethodField()
+
     class Meta:
         model = Shop
         fields = "__all__"
+
+    def get_user(self, obj):
+        return UserSerializer(obj.user).data
+
         
 class OrderItemSerializer(serializers.ModelSerializer):
     item = serializers.SerializerMethodField()
@@ -102,16 +109,15 @@ class ItemDetailSerializer(serializers.ModelSerializer):
 
 
 class AddressSerializer(serializers.ModelSerializer):
-    # country = CountryField()
 
     class Meta:
         model = Address
         fields = (
             'id',
             'user',
-            'street_address',
-            'apartment_address',
-            # 'country',
+            'address',
+            'lng',
+            'lat',
             'zip',
             'address_type',
             'default'

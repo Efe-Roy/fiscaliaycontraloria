@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'storages',
 
     'Auth',
-    'store'
+    'store',
 ]
 
 MIDDLEWARE = [

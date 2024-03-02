@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from .serializers import UserSerializer, SignupSerializer
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from .models import User
+from store.models import Shop
 from rest_framework.views import APIView
 from rest_framework.pagination import PageNumberPagination
 from rest_framework import status
@@ -27,11 +28,14 @@ class CheckAuthenticatedView(APIView):
 class SignupView(generics.GenericAPIView):
     serializer_class = SignupSerializer
     def post(self, request, *args, **kwargs):
-        # print(request.data)
+        # print("shop_name", request.data.get('shop_name'))
         serializer=self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
-    
+
+        if user.is_vendor == True:
+            Shop.objects.create(user=user, name=request.data.get('shop_name'))
+            
         return Response({
             "user": UserSerializer(user, context=self.get_serializer_context()).data,
             "message": "account create successfully"

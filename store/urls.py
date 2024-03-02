@@ -1,36 +1,32 @@
 from django.urls import path
 from .views import (
-    ItemListView,
-    ItemDetailView,
-    AddToCartView,
-    OrderDetailView,
-    OrderQuantityUpdateView,
-    AddCouponView,
-#     CountryListView,
-    AddressListView,
-    AddressCreateView,
-    AddressUpdateView,
-    AddressDeleteView,
-    OrderItemDeleteView,
-    PaymentListView,
-    ShopListView
+    ItemListView, ItemDetailView, ItemCreatView,
+    AddToCartView, ShopListView, ShopDetailView,
+    OrderDetailView, OrderQuantityUpdateView, AddCouponView, 
+    CreateCouponView, CouponDetailView,
+
+    AddressListView, AddressCreateView, AddressUpdateView, AddressDeleteView,
+    OrderItemDeleteView, OrderItemListView, PaymentListView
 )
 
 urlpatterns = [
-     # path('countries/', CountryListView.as_view(), name='country-list'),
      path('addresses/', AddressListView.as_view(), name='address-list'),
      path('addresses/create/', AddressCreateView.as_view(), name='address-create'),
      path('addresses/<pk>/update/', AddressUpdateView.as_view(), name='address-update'),
      path('addresses/<pk>/delete/',AddressDeleteView.as_view(), name='address-delete'),
+
      path('shops/', ShopListView.as_view()),
+     path('shop-detail/', ShopDetailView.as_view()),
      path('products/', ItemListView.as_view(), name='product-list'),
+     path('products-create/', ItemCreatView.as_view()),
      path('products/<pk>/', ItemDetailView.as_view(), name='product-detail'),
      path('add-to-cart/<pk>/', AddToCartView.as_view(), name='add-to-cart'),
      path('order-summary/', OrderDetailView.as_view(), name='order-summary'),
+     path('create-coupon/', CreateCouponView.as_view()),
+     path('detail-coupon/<pk>/', CouponDetailView.as_view()),
      path('add-coupon/', AddCouponView.as_view(), name='add-coupon'),
-     path('order-items/<pk>/delete/',
-          OrderItemDeleteView.as_view(), name='order-item-delete'),
-     path('order-item/update-quantity/',
-          OrderQuantityUpdateView.as_view(), name='order-item-update-quantity'),
+     path('order-items-list/', OrderItemListView.as_view()),
+     path('order-items/<pk>/delete/', OrderItemDeleteView.as_view(), name='order-item-delete'),
+     path('order-item/update-quantity/<pk>/', OrderQuantityUpdateView.as_view()),
      path('payments/', PaymentListView.as_view(), name='payment-list'),
 ]

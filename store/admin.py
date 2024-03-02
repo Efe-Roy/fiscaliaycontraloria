@@ -47,14 +47,15 @@ class OrderAdmin(admin.ModelAdmin):
 class AddressAdmin(admin.ModelAdmin):
     list_display = [
         'user',
-        'street_address',
-        'apartment_address',
+        'address',
+        'lng',
+        'lat',
         'zip',
         'address_type',
         'default'
     ]
     list_filter = ['default', 'address_type']
-    search_fields = ['user', 'street_address', 'apartment_address', 'zip']
+    search_fields = ['user', 'address', 'lat', 'lng', 'zip']
 
 
 admin.site.register(Category)

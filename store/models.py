@@ -17,9 +17,9 @@ class Category(models.Model):
         return self.name
 
 class Shop(models.Model):
-    user = models.ForeignKey(User, related_name='products', on_delete=models.CASCADE)
-    name = models.CharField(max_length=255)
-    image = models.ImageField(upload_to='shop_images/')
+    user = models.OneToOneField(User, related_name='products', on_delete=models.CASCADE)
+    name = models.CharField(max_length=255, blank=True, null=True)
+    image = models.ImageField(upload_to='shop_images/', blank=True, null=True)
     description = models.TextField(blank=True, null=True)
     stars = models.IntegerField(blank=True, null=True)
     reviews = models.CharField(max_length=255, blank=True, null=True)
@@ -33,7 +33,8 @@ class Shop(models.Model):
 class Item(models.Model):
     shop = models.ForeignKey(Shop, on_delete=models.CASCADE)
     category = models.ForeignKey(Category, blank=True, null=True, on_delete=models.CASCADE)
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, blank=True, null=True)
+    inventory = models.CharField(max_length=255, blank=True, null=True)
     slug = models.SlugField(blank=True, null=True)
     description = models.TextField(blank=True, null=True)
     price = models.FloatField()
@@ -71,6 +72,7 @@ class OrderItem(models.Model):
 
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    shop = models.ForeignKey(Shop, on_delete=models.CASCADE, blank=True, null=True)
     ref_code = models.CharField(max_length=20, blank=True, null=True)
     items = models.ManyToManyField(OrderItem)
     start_date = models.DateTimeField(auto_now_add=True)
@@ -102,11 +104,9 @@ class Order(models.Model):
 
 class Address(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    street_address = models.CharField(max_length=100)
-    apartment_address = models.CharField(max_length=100)
+    address = models.CharField(max_length=100)
     lng = models.FloatField()
     lat = models.FloatField()
-    # country = CountryField(multiple=False)
     zip = models.CharField(max_length=100)
     address_type = models.CharField(max_length=1, choices=ADDRESS_CHOICES)
     default = models.BooleanField(default=False)
@@ -127,6 +127,7 @@ class Payment(models.Model):
 class Coupon(models.Model):
     code = models.CharField(max_length=15)
     amount = models.FloatField()
+    shop = models.ForeignKey(Shop, on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self):
         return self.code
