@@ -1,4 +1,3 @@
-# from django_countries import countries
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404
 from django.shortcuts import get_object_or_404
@@ -18,6 +17,12 @@ from .serializers import (
 )
 from store.models import Item, OrderItem, Order, Address, Payment, Coupon, Shop
 
+import random
+import string
+
+
+def create_ref_code():
+    return ''.join(random.choices(string.ascii_lowercase + string.digits, k=20))
 
 class CustomPagination(PageNumberPagination):
     page_size_query_param = 'PageSize'
@@ -50,7 +55,13 @@ class ItemListView(ListCreateAPIView):
     pagination_class = CustomPagination
 
     def get_queryset(self):
+        user=self.request.user
+        shop = Shop.objects.get(user=user)
         queryset = Item.objects.all().order_by("-id")
+
+        if user.is_vendor:
+            queryset = queryset.filter(shop_id=shop.id)
+
 
         # Filter based on request parameters
         name = self.request.query_params.get('name', None)
@@ -63,10 +74,74 @@ class ItemListView(ListCreateAPIView):
         
         return queryset
 
+
+    # def list(self, request, *args, **kwargs):
+    #     queryset = self.get_queryset()
+
+    #     # Count instances where state.name is "EJECUCION"
+    #     ejecucion_count = queryset.filter(state__name="EJECUCION").count()
+
+    #     # Count instances where state.name is "EJECUCION"
+    #     terminado_count = queryset.filter(state__name="TERMINADO").count()
+
+    #     # Count instances of each processType
+    #     process_counts = queryset.values('process__name').annotate(process_count=Count('process'))
+
+    #     # Count instances of each resSecType
+    #     responsible_secretary_counts = queryset.values('responsible_secretary__name').annotate(responsible_secretary_count=Count('responsible_secretary'))
+
+    #     # Count instances of each stateType
+    #     state_counts = queryset.values('state__name').annotate(state_count=Count('state'))
+       
+    #     # Count instances of each typologyType
+    #     typology_counts = queryset.values('typology__name').annotate(typology_count=Count('typology'))
+
+    #     # Count instances where sex is "Masculino"
+    #     male_count = queryset.filter(sex="Masculino").count()
+
+    #     # Count instances where sex is "Femenino"
+    #     female_count = queryset.filter(sex="Femenino").count()
+
+    #     # Count all
+    #     count = queryset.count()
+
+    #     # Calculate the accumulated value of contract_value_plus
+    #     accumulated_value = queryset.aggregate(
+    #         total_accumulated_value=Sum(
+    #             Cast('contract_value_plus', output_field=DecimalField(max_digits=15, decimal_places=2))
+    #         )
+    #     )['total_accumulated_value'] or Decimal('0.00')  # Default to 0.00 if no valid values are found
+
+    #     # queryset = queryset.extra(
+    #     #     select={'contact_no_integer': "substring(contact_no from '\\d+')::integer"},
+    #     #     order_by=['contact_no_integer', 'contact_no']
+    #     # )
+
+    #     queryset = queryset.order_by('contact_no')
+
+    #     serializer = self.get_serializer(queryset, many=True)
+    #     response_data = {
+    #         'results': serializer.data,
+    #         'accumulated_value': str(accumulated_value),  # Convert Decimal to string for serialization
+    #         'ejecucion_count': ejecucion_count,
+    #         'terminado_count': terminado_count,
+    #         'process_counts': process_counts,
+    #         'responsible_secretary_counts': responsible_secretary_counts,
+    #         'state_counts': state_counts,
+    #         'typology_counts': typology_counts,
+    #         'male_count': male_count,
+    #         'female_count': female_count,
+    #         'count': count
+    #     }
+
+    #     return Response(response_data)
+
+
 class ItemCreatView(APIView):
     def post(self, request, *args, **kwargs):
-        user = request.user
-        instance = Shop.objects.get(user=user)
+        shop_id = request.data.get('shop')
+        # user = request.user
+        instance = Shop.objects.get(id=shop_id)
         serializer = ItemSerializer(data=request.data)
         if serializer.is_valid():
             serializer.validated_data['shop'] = instance  
@@ -178,6 +253,39 @@ class OrderDetailView(RetrieveAPIView):
             raise Http404("You do not have an active order")
             # return Response({"message": "You do not have an active order"}, status=HTTP_400_BAD_REQUEST)
 
+class PaymentView(APIView):
+
+    def post(self, request, *args, **kwargs):
+        order = Order.objects.get(user=self.request.user, ordered=False)
+        billing_address_id = request.data.get('selectedBillingAddress')
+        shipping_address_id = request.data.get('selectedShippingAddress')
+
+        billing_address = Address.objects.get(id=billing_address_id)
+        shipping_address = Address.objects.get(id=shipping_address_id)
+
+        # create the payment
+        payment = Payment()
+        payment.user = self.request.user
+        payment.amount = order.get_total()
+        payment.save()
+
+        # assign the payment to the order
+
+        order_items = order.items.all()
+        order_items.update(ordered=True)
+        for item in order_items:
+            item.save()
+
+        order.ordered = True
+        order.payment = payment
+        order.billing_address = billing_address
+        order.shipping_address = shipping_address
+        order.ref_code = create_ref_code()
+        order.save()
+
+        return Response({"message": "Your order was successful!"} ,status=HTTP_200_OK)
+        
+    
 class CreateCouponView(APIView):
     def get(self, request, format=None):
         queryset = Coupon.objects.all()

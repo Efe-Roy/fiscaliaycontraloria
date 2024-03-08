@@ -54,7 +54,8 @@ class CustomAuthToken(ObtainAuthToken):
 
         return Response({
             "token":token.key,
-            "is_vendor": user.is_vendor
+            "is_vendor": user.is_vendor,
+            "is_admin": user.is_admin
         })
 
 class CustomPageNumberPagination(PageNumberPagination):
@@ -83,11 +84,12 @@ class UserListView(generics.ListAPIView):
    
         return queryset
 
-
-class UserDetail(generics.RetrieveAPIView):
-    permission_classes = [IsAuthenticated]
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
+class UserDetailView(APIView):
+    def get(self, request, format=None):
+        user=request.user
+        queryset = User.objects.get(id=user.id)
+        serializer = UserSerializer(queryset)
+        return Response( serializer.data)
 
 class ChangePasswordView(APIView):
     permission_classes = (IsAuthenticated,)
