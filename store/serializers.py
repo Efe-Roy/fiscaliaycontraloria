@@ -60,6 +60,7 @@ class OrderSerializer(serializers.ModelSerializer):
     order_items = serializers.SerializerMethodField()
     total = serializers.SerializerMethodField()
     coupon = serializers.SerializerMethodField()
+    user = serializers.SerializerMethodField()
 
     class Meta:
         model = Order
@@ -80,6 +81,9 @@ class OrderSerializer(serializers.ModelSerializer):
         if obj.coupon is not None:
             return CouponSerializer(obj.coupon).data
         return None
+    
+    def get_user(self, obj):
+        return UserSerializer(obj.user).data
 
 
 class ItemDetailSerializer(serializers.ModelSerializer):
