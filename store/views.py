@@ -240,6 +240,20 @@ class AddToCartView(APIView):
             order.items.add(order_item)
             return Response(status=HTTP_200_OK)
 
+class OrderListView(ListCreateAPIView):
+    permission_classes = (AllowAny,)
+    serializer_class = OrderSerializer
+    pagination_class = CustomPagination
+
+    def get_queryset(self):
+        queryset = Order.objects.all().order_by("-id")
+
+        # Filter based on request parameters
+        user_id = self.request.query_params.get('user_id', None)
+        if user_id:
+            queryset = queryset.filter(user_id=user_id, ordered=False)
+        
+        return queryset
 
 class OrderDetailView(RetrieveAPIView):
     serializer_class = OrderSerializer
