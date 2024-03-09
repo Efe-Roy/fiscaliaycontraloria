@@ -66,6 +66,7 @@ class OrderSerializer(serializers.ModelSerializer):
         model = Order
         fields = (
             'id',
+            'user',
             'order_items',
             'total',
             'coupon'
