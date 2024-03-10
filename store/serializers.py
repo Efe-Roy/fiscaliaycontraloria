@@ -69,6 +69,7 @@ class OrderSerializer(serializers.ModelSerializer):
             'user',
             'order_items',
             'total',
+            'ordered',
             'coupon'
         )
 
