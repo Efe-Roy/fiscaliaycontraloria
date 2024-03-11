@@ -39,7 +39,7 @@ class Item(models.Model):
     description = models.TextField(blank=True, null=True)
     price = models.FloatField()
     discount_price = models.FloatField(blank=True, null=True)
-    image = models.ImageField(upload_to='item_images/')
+    image = models.ImageField(upload_to='item_images/', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
