@@ -9,7 +9,7 @@ from rest_framework.generics import (
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST, HTTP_201_CREATED, HTTP_401_UNAUTHORIZED
+from rest_framework.status import HTTP_200_OK, HTTP_204_NO_CONTENT, HTTP_400_BAD_REQUEST, HTTP_201_CREATED, HTTP_401_UNAUTHORIZED
 from rest_framework.pagination import PageNumberPagination
 from .serializers import (
     ItemSerializer, OrderSerializer, ItemDetailSerializer, AddressSerializer,
@@ -151,11 +151,35 @@ class ItemCreatView(APIView):
         return Response(serializer.errors, status= HTTP_400_BAD_REQUEST)
     
 
-class ItemDetailView(RetrieveAPIView):
-    permission_classes = (AllowAny,)
-    serializer_class = ItemDetailSerializer
-    queryset = Item.objects.all()
+# class ItemDetailView(RetrieveAPIView):
+#     permission_classes = (AllowAny,)
+#     serializer_class = ItemDetailSerializer
+#     queryset = Item.objects.all()
 
+class ItemDetailView(APIView):
+    def get_object(self, pk):
+        try:
+            return Item.objects.get(id=pk)
+        except Item.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        instance = self.get_object(pk)
+        serializer = ItemDetailSerializer(instance)
+        return Response( serializer.data)
+
+    def put(self, request, pk, format=None):
+        instance = self.get_object(pk)
+        serializer = ItemDetailSerializer(instance, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status= HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk, format=None):
+        instance = self.get_object(pk)
+        instance.delete()
+        return Response(status= HTTP_204_NO_CONTENT)
 
 class OrderQuantityUpdateView(APIView):
     def post(self, request, pk, *args, **kwargs):
