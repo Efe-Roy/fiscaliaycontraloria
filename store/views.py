@@ -139,9 +139,9 @@ class ItemListView(ListCreateAPIView):
 
 class ItemCreatView(APIView):
     def post(self, request, *args, **kwargs):
-        shop_id = request.data.get('shop')
-        # user = request.user
-        instance = Shop.objects.get(id=shop_id)
+        # shop_id = request.data.get('shop')
+        user = request.user
+        instance = Shop.objects.get(user=user)
         serializer = ItemSerializer(data=request.data)
         if serializer.is_valid():
             serializer.validated_data['shop'] = instance  
