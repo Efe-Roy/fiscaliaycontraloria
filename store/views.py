@@ -375,12 +375,14 @@ class AddressListView(ListAPIView):
         return qs.filter(user=self.request.user, address_type=address_type)
 
 
-class AddressCreateView(CreateAPIView):
-    permission_classes = (IsAuthenticated, )
-    serializer_class = AddressSerializer
-    queryset = Address.objects.all()
+# class AddressCreateView(CreateAPIView):
+#     permission_classes = (IsAuthenticated, )
+#     serializer_class = AddressSerializer
+#     queryset = Address.objects.all()
 
 class AddressCreateView(APIView):
+    permission_classes = (IsAuthenticated, )
+
     def post(self, request, *args, **kwargs):
         user = request.user
         serializer = AddressSerializer(data=request.data)
