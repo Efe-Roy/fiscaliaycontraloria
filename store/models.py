@@ -103,7 +103,7 @@ class Order(models.Model):
         return total
 
 class Address(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
     address = models.CharField(max_length=100, blank=True, null=True)
     lng = models.FloatField(blank=True, null=True)
     lat = models.FloatField(blank=True, null=True)
