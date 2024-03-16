@@ -108,7 +108,7 @@ class Address(models.Model):
     lng = models.FloatField(blank=True, null=True)
     lat = models.FloatField(blank=True, null=True)
     zip = models.CharField(max_length=100, blank=True, null=True)
-    address_type = models.CharField(max_length=1, choices=ADDRESS_CHOICES)
+    address_type = models.CharField(max_length=1, choices=ADDRESS_CHOICES, blank=True, null=True)
     default = models.BooleanField(default=False)
 
     def __str__(self):
