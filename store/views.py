@@ -380,6 +380,18 @@ class AddressCreateView(CreateAPIView):
     serializer_class = AddressSerializer
     queryset = Address.objects.all()
 
+class AddressCreateView(APIView):
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        serializer = AddressSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.validated_data['user'] = user  
+            serializer.save()
+
+            return Response(serializer.data, status= HTTP_201_CREATED)
+        return Response(serializer.errors, status= HTTP_400_BAD_REQUEST)
+    
+
 
 class AddressUpdateView(UpdateAPIView):
     permission_classes = (IsAuthenticated, )

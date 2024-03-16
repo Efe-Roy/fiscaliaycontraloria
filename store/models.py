@@ -104,10 +104,10 @@ class Order(models.Model):
 
 class Address(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    address = models.CharField(max_length=100)
-    lng = models.FloatField()
-    lat = models.FloatField()
-    zip = models.CharField(max_length=100)
+    address = models.CharField(max_length=100, blank=True, null=True)
+    lng = models.FloatField(blank=True, null=True)
+    lat = models.FloatField(blank=True, null=True)
+    zip = models.CharField(max_length=100, blank=True, null=True)
     address_type = models.CharField(max_length=1, choices=ADDRESS_CHOICES)
     default = models.BooleanField(default=False)
 
