@@ -56,10 +56,10 @@ class ItemListView(ListCreateAPIView):
 
     def get_queryset(self):
         user=self.request.user
-        shop = Shop.objects.get(user=user)
         queryset = Item.objects.all().order_by("-id")
 
         if user.is_vendor:
+            shop = Shop.objects.get(user=user)
             queryset = queryset.filter(shop_id=shop.id)
 
 
