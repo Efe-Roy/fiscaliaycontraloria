@@ -294,16 +294,16 @@ class AddCouponView(APIView):
         order.save()
         return Response(status=HTTP_200_OK)
 
-class AddressListView(ListAPIView):
-    permission_classes = (IsAuthenticated, )
-    serializer_class = AddressSerializer
+# class AddressListView(ListAPIView):
+#     permission_classes = (IsAuthenticated, )
+#     serializer_class = AddressSerializer
 
-    def get_queryset(self):
-        address_type = self.request.query_params.get('address_type', None)
-        qs = Address.objects.all().order_by("id")
-        if address_type is None:
-            return qs
-        return qs.filter(user=self.request.user, address_type=address_type)
+#     def get_queryset(self):
+#         address_type = self.request.query_params.get('address_type', None)
+#         qs = Address.objects.all().order_by("id")
+#         if address_type is None:
+#             return qs
+#         return qs.filter(user=self.request.user, address_type=address_type)
 
 class AddressListView(ListCreateAPIView):
     permission_classes = (IsAuthenticated, )

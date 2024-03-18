@@ -1,5 +1,4 @@
 from django.db import models
-# from django_countries.fields import CountryField
 from Auth.models import User
 
 # Create your models here.
