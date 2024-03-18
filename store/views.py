@@ -369,16 +369,10 @@ class AddressListView(ListAPIView):
 
     def get_queryset(self):
         address_type = self.request.query_params.get('address_type', None)
-        qs = Address.objects.all()
+        qs = Address.objects.all().order_by("id")
         if address_type is None:
             return qs
         return qs.filter(user=self.request.user, address_type=address_type)
-
-
-# class AddressCreateView(CreateAPIView):
-#     permission_classes = (IsAuthenticated, )
-#     serializer_class = AddressSerializer
-#     queryset = Address.objects.all()
 
 class AddressCreateView(APIView):
     permission_classes = (IsAuthenticated, )
@@ -392,9 +386,7 @@ class AddressCreateView(APIView):
 
             return Response(serializer.data, status= HTTP_201_CREATED)
         return Response(serializer.errors, status= HTTP_400_BAD_REQUEST)
-    
-
-
+  
 class AddressUpdateView(UpdateAPIView):
     permission_classes = (IsAuthenticated, )
     serializer_class = AddressSerializer
