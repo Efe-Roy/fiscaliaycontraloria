@@ -3,7 +3,7 @@ from .views import (
     ItemListView, ItemDetailView, ItemCreatView,
     AddToCartView, ShopListView, ShopDetailView,
     OrderDetailView, OrderQuantityUpdateView, AddCouponView, 
-    CreateCouponView, CouponDetailView, OrderListView,
+    CreateCouponView, CouponDetailView, OrderListView, AddressDefaultAPIView,
 
     AddressListView, AddressCreateView, AddressUpdateView, AddressDeleteView,
     OrderItemDeleteView, OrderItemListView, PaymentListView, PaymentView
@@ -13,6 +13,7 @@ urlpatterns = [
      path('addresses/', AddressListView.as_view(), name='address-list'),
      path('addresses/create/', AddressCreateView.as_view(), name='address-create'),
      path('addresses/<pk>/update/', AddressUpdateView.as_view(), name='address-update'),
+     path('addresses/<pk>/defualt/', AddressDefaultAPIView.as_view()),
      path('addresses/<pk>/delete/',AddressDeleteView.as_view(), name='address-delete'),
 
      path('shops/', ShopListView.as_view()),

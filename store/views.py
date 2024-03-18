@@ -405,7 +405,21 @@ class AddressDeleteView(DestroyAPIView):
     permission_classes = (IsAuthenticated, )
     queryset = Address.objects.all()
 
+class AddressDefaultAPIView(APIView):
+    def get(self, request, pk, format=None):
+        user=request.user
+        qs = Address.objects.filter(user=user)
 
+        for data in qs:
+            data.default = False
+            data.save()
+
+        instance = Address.objects.get(id=pk)
+        instance.default = True
+        instance.save()
+
+        return Response("Successfully updated for instances", status=HTTP_200_OK)
+    
 class PaymentListView(ListAPIView):
     permission_classes = (IsAuthenticated, )
     serializer_class = PaymentSerializer
