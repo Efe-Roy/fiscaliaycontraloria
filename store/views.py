@@ -74,69 +74,6 @@ class ItemListView(ListCreateAPIView):
         
         return queryset
 
-
-    # def list(self, request, *args, **kwargs):
-    #     queryset = self.get_queryset()
-
-    #     # Count instances where state.name is "EJECUCION"
-    #     ejecucion_count = queryset.filter(state__name="EJECUCION").count()
-
-    #     # Count instances where state.name is "EJECUCION"
-    #     terminado_count = queryset.filter(state__name="TERMINADO").count()
-
-    #     # Count instances of each processType
-    #     process_counts = queryset.values('process__name').annotate(process_count=Count('process'))
-
-    #     # Count instances of each resSecType
-    #     responsible_secretary_counts = queryset.values('responsible_secretary__name').annotate(responsible_secretary_count=Count('responsible_secretary'))
-
-    #     # Count instances of each stateType
-    #     state_counts = queryset.values('state__name').annotate(state_count=Count('state'))
-       
-    #     # Count instances of each typologyType
-    #     typology_counts = queryset.values('typology__name').annotate(typology_count=Count('typology'))
-
-    #     # Count instances where sex is "Masculino"
-    #     male_count = queryset.filter(sex="Masculino").count()
-
-    #     # Count instances where sex is "Femenino"
-    #     female_count = queryset.filter(sex="Femenino").count()
-
-    #     # Count all
-    #     count = queryset.count()
-
-    #     # Calculate the accumulated value of contract_value_plus
-    #     accumulated_value = queryset.aggregate(
-    #         total_accumulated_value=Sum(
-    #             Cast('contract_value_plus', output_field=DecimalField(max_digits=15, decimal_places=2))
-    #         )
-    #     )['total_accumulated_value'] or Decimal('0.00')  # Default to 0.00 if no valid values are found
-
-    #     # queryset = queryset.extra(
-    #     #     select={'contact_no_integer': "substring(contact_no from '\\d+')::integer"},
-    #     #     order_by=['contact_no_integer', 'contact_no']
-    #     # )
-
-    #     queryset = queryset.order_by('contact_no')
-
-    #     serializer = self.get_serializer(queryset, many=True)
-    #     response_data = {
-    #         'results': serializer.data,
-    #         'accumulated_value': str(accumulated_value),  # Convert Decimal to string for serialization
-    #         'ejecucion_count': ejecucion_count,
-    #         'terminado_count': terminado_count,
-    #         'process_counts': process_counts,
-    #         'responsible_secretary_counts': responsible_secretary_counts,
-    #         'state_counts': state_counts,
-    #         'typology_counts': typology_counts,
-    #         'male_count': male_count,
-    #         'female_count': female_count,
-    #         'count': count
-    #     }
-
-    #     return Response(response_data)
-
-
 class ItemCreatView(APIView):
     def post(self, request, *args, **kwargs):
         # shop_id = request.data.get('shop')
@@ -150,12 +87,6 @@ class ItemCreatView(APIView):
             return Response(serializer.data, status= HTTP_201_CREATED)
         return Response(serializer.errors, status= HTTP_400_BAD_REQUEST)
     
-
-# class ItemDetailView(RetrieveAPIView):
-#     permission_classes = (AllowAny,)
-#     serializer_class = ItemDetailSerializer
-#     queryset = Item.objects.all()
-
 class ItemDetailView(APIView):
     def get_object(self, pk):
         try:
@@ -373,6 +304,26 @@ class AddressListView(ListAPIView):
         if address_type is None:
             return qs
         return qs.filter(user=self.request.user, address_type=address_type)
+
+class AddressListView(ListCreateAPIView):
+    permission_classes = (IsAuthenticated, )
+    serializer_class = AddressSerializer
+    pagination_class = CustomPagination
+
+    def get_queryset(self):
+        user=self.request.user
+        queryset = Address.objects.filter(user=user).order_by("-id")
+
+        # Filter based on request parameters
+        address_type = self.request.query_params.get('address_type', None)
+        if address_type:
+            queryset = queryset.filter(address_type=address_type)
+
+        default = self.request.query_params.get('default', None)
+        if default:
+            queryset = queryset.filter(default=True)
+
+        return queryset
 
 class AddressCreateView(APIView):
     permission_classes = (IsAuthenticated, )
