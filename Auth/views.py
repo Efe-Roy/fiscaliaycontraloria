@@ -128,3 +128,42 @@ class DeleteAccountView(APIView):
             return Response({ 'success': 'User deleted successfully' })
         except:
             return Response({ 'error': 'Something went wrong when trying to delete user' })
+
+
+class DepositView(APIView):
+    def post(self, request):
+        amount = request.data.get('amount')
+        user = request.user
+        user.balance += amount
+        user.save()
+        serializer = UserSerializer(user)
+        return Response(serializer.data)
+
+class WithdrawView(APIView):
+    def post(self, request):
+        amount = request.data.get('amount')
+        user = request.user
+        if amount > user.balance:
+            return Response({'error': 'Insufficient balance'}, status=status.HTTP_400_BAD_REQUEST)
+        user.balance -= amount
+        user.save()
+        serializer = UserSerializer(user)
+        return Response(serializer.data)
+
+class TransferView(APIView):
+    def post(self, request):
+        amount = request.data.get('amount')
+        to_user_id = request.data.get('to_user_id')
+        from_account = request.user
+        to_account = User.objects.get(user_id=to_user_id)
+        
+        if amount > from_account.balance:
+            return Response({'error': 'Insufficient balance'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        from_account.balance -= amount
+        to_account.balance += amount
+        
+        from_account.save()
+        to_account.save()
+        
+        return Response({'message': 'Transfer successful'})

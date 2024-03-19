@@ -2,7 +2,8 @@ from .views import SignupView
 from django.urls import path, include
 from .views import (
     CustomAuthToken, UserListView, UserDetailView, 
-    CheckAuthenticatedView, ChangePasswordView, LogoutView
+    CheckAuthenticatedView, ChangePasswordView, LogoutView,
+    DepositView, WithdrawView, TransferView
     # get_all_team, UserProfileDetail,
     # CreateOperatorView, get_all_agent, OTPVerificationView,
     # RequestPasswordResetEmail, PasswordTokenCheckAPI,
@@ -18,6 +19,10 @@ urlpatterns = [
     path('api/user-detail/', UserDetailView.as_view()),
     path('api/rest-auth/change-password/', ChangePasswordView.as_view()),
     path('api/auth/logout', LogoutView.as_view()),
+
+    path('api/deposit/', DepositView.as_view(), name='deposit'),
+    path('api/withdraw/', WithdrawView.as_view(), name='withdraw'),
+    path('api/transfer/', TransferView.as_view(), name='transfer'),
 
     # path('api/activate-deactivate/', ActivateDeactivateUser.as_view()),
 
