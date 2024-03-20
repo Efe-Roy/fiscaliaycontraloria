@@ -55,9 +55,10 @@ class CustomAuthToken(ObtainAuthToken):
         token, created = Token.objects.get_or_create(user=user)
 
         return Response({
-            "token":token.key,
+            "token": token.key,
             "is_vendor": user.is_vendor,
-            "is_admin": user.is_admin
+            "is_admin": user.is_admin,
+            "user_id": user.id
         })
 
 class CustomPageNumberPagination(PageNumberPagination):
