@@ -208,6 +208,10 @@ class OrderListView(ListCreateAPIView):
         if user_id:
             queryset = queryset.filter(user_id=user_id, ordered=False)
         
+        user_id_2 = self.request.query_params.get('user_id_2', None)
+        if user_id_2:
+            queryset = queryset.filter(user_id=user_id_2)
+        
         return queryset
 
 class OrderDetailView(RetrieveAPIView):
