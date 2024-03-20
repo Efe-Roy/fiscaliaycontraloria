@@ -226,11 +226,6 @@ class PaymentView(APIView):
 
     def post(self, request, *args, **kwargs):
         order = Order.objects.get(user=self.request.user, ordered=False)
-        billing_address_id = request.data.get('selectedBillingAddress')
-        shipping_address_id = request.data.get('selectedShippingAddress')
-
-        billing_address = Address.objects.get(id=billing_address_id)
-        shipping_address = Address.objects.get(id=shipping_address_id)
 
         # create the payment
         payment = Payment()
@@ -239,7 +234,6 @@ class PaymentView(APIView):
         payment.save()
 
         # assign the payment to the order
-
         order_items = order.items.all()
         order_items.update(ordered=True)
         for item in order_items:
@@ -247,8 +241,6 @@ class PaymentView(APIView):
 
         order.ordered = True
         order.payment = payment
-        order.billing_address = billing_address
-        order.shipping_address = shipping_address
         order.ref_code = create_ref_code()
         order.save()
 
