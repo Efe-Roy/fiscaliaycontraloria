@@ -10,6 +10,6 @@ def upload_to(instance, filename):
 class User(AbstractUser):
     is_admin = models.BooleanField(default=False)
     is_vendor = models.BooleanField(default=False)
-    balance = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    acc_balance = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     phone_num = models.CharField(max_length=300, null=True, blank=True)
     image = models.ImageField(_("Image"), upload_to=upload_to, null=True, blank=True)

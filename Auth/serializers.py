@@ -5,7 +5,7 @@ class UserSerializer(serializers.ModelSerializer):
    
     class Meta:
         model=User
-        fields= ['id', 'username', 'email', 'is_vendor', 'is_active', 'balance']
+        fields= ['id', 'username', 'email', 'is_vendor', 'is_active']
         
 class SignupSerializer(serializers.ModelSerializer):
     password2=serializers.CharField(style={"input_type":"password"}, write_only=True)

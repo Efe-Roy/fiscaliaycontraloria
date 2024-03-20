@@ -10,6 +10,8 @@ from store.models import Shop
 from rest_framework.views import APIView
 from rest_framework.pagination import PageNumberPagination
 from rest_framework import status
+from decimal import Decimal
+
 
 class CheckAuthenticatedView(APIView):
     def get(self, request, format=None):
@@ -135,22 +137,35 @@ class DepositView(APIView):
         amount = request.data.get('amount')
         user_id = request.data.get('user_id')
         user = User.objects.get(id=user_id)
-        user.balance += amount
+        try:
+            amount = Decimal(amount)
+        except ValueError:
+            return Response({'error': 'Invalid amount'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        user.acc_balance += amount
         user.save()
-        serializer = UserSerializer(user)
-        return Response(serializer.data)
+        # serializer = UserSerializer(user)
+        return Response({'success': 'Successfully credited the account'})
+        # return Response(serializer.data)
 
 class WithdrawView(APIView):
     def post(self, request):
         amount = request.data.get('amount')
         user_id = request.data.get('user_id')
         user = User.objects.get(id=user_id)
-        if amount > user.balance:
+
+        try:
+            amount = Decimal(amount)
+        except ValueError:
+            return Response({'error': 'Invalid amount'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        if amount > user.acc_balance:
             return Response({'error': 'Insufficient balance'}, status=status.HTTP_400_BAD_REQUEST)
-        user.balance -= amount
+        user.acc_balance -= amount
         user.save()
-        serializer = UserSerializer(user)
-        return Response(serializer.data)
+        # serializer = UserSerializer(user)
+        # return Response(serializer.data)
+        return Response({'success': 'Successfully withdraw from the account'})
 
 class TransferView(APIView):
     def post(self, request):
