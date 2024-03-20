@@ -206,7 +206,7 @@ class OrderListView(ListCreateAPIView):
         # Filter based on request parameters
         user_id = self.request.query_params.get('user_id', None)
         if user_id:
-            queryset = queryset.filter(user_id=user_id)
+            queryset = queryset.filter(user_id=user_id, ordered=False)
         
         return queryset
 
