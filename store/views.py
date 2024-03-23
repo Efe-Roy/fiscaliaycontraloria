@@ -16,6 +16,7 @@ from .serializers import (
     PaymentSerializer, ShopSerializer, OrderItemSerializer, CouponSerializer
 )
 from store.models import Item, OrderItem, Order, Address, Payment, Coupon, Shop
+from Auth.serializers import UserSerializer
 
 import random
 import string
@@ -28,6 +29,27 @@ class CustomPagination(PageNumberPagination):
     page_size_query_param = 'PageSize'
     # max_page_size = 100
 
+class ShopCreateView(APIView):
+    def post(self, request, *args, **kwargs):
+        serializer = ShopSerializer(data=request.data)
+        if serializer.is_valid():
+            user_data = {
+                'username': request.data.get('username'), 
+                'email': request.data.get('email'), 
+                'password': request.data.get('password'), 
+                'is_vendor': True
+            }
+            user_serializer = UserSerializer(data=user_data)
+            if user_serializer.is_valid():
+                user = user_serializer.save() 
+                user.set_password(user_data['password']) 
+                user.save() 
+                serializer.save(user=user) 
+                return Response(serializer.data, status=HTTP_201_CREATED)
+            else:
+                return Response(user_serializer.errors, status=HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
+    
 class ShopListView(ListCreateAPIView):
     permission_classes = (AllowAny,)
     serializer_class = ShopSerializer

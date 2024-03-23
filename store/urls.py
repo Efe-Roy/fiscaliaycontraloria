@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import (
     ItemListView, ItemDetailView, ItemCreatView,
-    AddToCartView, ShopListView, ShopDetailView,
+    AddToCartView, ShopListView, ShopDetailView, ShopCreateView,
     OrderDetailView, OrderQuantityUpdateView, AddCouponView, 
     CreateCouponView, CouponDetailView, OrderListView, AddressDefaultAPIView,
 
@@ -17,6 +17,7 @@ urlpatterns = [
      path('addresses/<pk>/delete/',AddressDeleteView.as_view(), name='address-delete'),
 
      path('shops/', ShopListView.as_view()),
+     path('shops-create/', ShopCreateView.as_view()),
      path('shop-detail/', ShopDetailView.as_view()),
      path('products/', ItemListView.as_view()),
      path('products-create/', ItemCreatView.as_view()),

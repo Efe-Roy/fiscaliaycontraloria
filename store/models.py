@@ -16,7 +16,7 @@ class Category(models.Model):
         return self.name
 
 class Shop(models.Model):
-    user = models.OneToOneField(User, related_name='products', on_delete=models.CASCADE)
+    user = models.OneToOneField(User, related_name='products', on_delete=models.CASCADE, blank=True, null=True)
     name = models.CharField(max_length=255, blank=True, null=True)
     image = models.ImageField(upload_to='shop_images/', blank=True, null=True)
     description = models.TextField(blank=True, null=True)
