@@ -84,6 +84,10 @@ class UserListView(generics.ListAPIView):
         is_vendor = self.request.query_params.get('is_vendor', False)
         if is_vendor:
             queryset = queryset.filter(is_vendor=is_vendor)
+
+        is_rider = self.request.query_params.get('is_rider', False)
+        if is_rider:
+            queryset = queryset.filter(is_rider=is_rider)
    
         return queryset
 
