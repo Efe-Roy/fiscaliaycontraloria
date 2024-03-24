@@ -17,6 +17,7 @@ from .serializers import (
 )
 from store.models import Item, OrderItem, Order, Address, Payment, Coupon, Shop
 from Auth.serializers import UserSerializer
+from decimal import Decimal
 
 import random
 import string
@@ -251,11 +252,22 @@ class OrderDetailView(RetrieveAPIView):
 class PaymentView(APIView):
 
     def post(self, request, *args, **kwargs):
-        order = Order.objects.get(user=self.request.user, ordered=False)
+        user = self.request.user
+        order = Order.objects.get(user=user, ordered=False)
+        # print("acc_balance", user.acc_balance)
+        # print("order total", order.get_total())
+        
+        if order.get_total() > user.acc_balance:
+            return Response({'error': 'Insufficient balance'}, status=HTTP_400_BAD_REQUEST)
+        
+        user.acc_balance -= Decimal(order.get_total())
+        user.save()
+        # print("final acc_balance", user.acc_balance)
 
+        
         # create the payment
         payment = Payment()
-        payment.user = self.request.user
+        payment.user = user
         payment.amount = order.get_total()
         payment.save()
 
@@ -264,6 +276,7 @@ class PaymentView(APIView):
         order_items.update(ordered=True)
         for item in order_items:
             item.save()
+            # pass
 
         order.ordered = True
         order.payment = payment

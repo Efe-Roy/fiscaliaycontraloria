@@ -27,6 +27,7 @@ class SignupSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({"error":"password do not match"})
         user.set_password(password)
         user.is_vendor=self.validated_data['is_vendor']
+        user.is_rider=self.validated_data['is_rider']
         # user.is_vendor= True
         user.save()
         return user
