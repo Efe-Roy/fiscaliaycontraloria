@@ -5,13 +5,13 @@ class UserSerializer(serializers.ModelSerializer):
    
     class Meta:
         model=User
-        fields= ['id', 'username', 'email', 'is_vendor', 'is_rider', 'is_active', 'acc_balance', 'image']
+        fields= ['id', 'username', 'email', 'is_vendor', 'is_rider', 'is_client', 'is_active', 'acc_balance', 'image']
         
 class SignupSerializer(serializers.ModelSerializer):
     password2=serializers.CharField(style={"input_type":"password"}, write_only=True)
     class Meta:
         model=User
-        fields=['username','email','password', 'password2', 'is_vendor', 'is_rider']
+        fields=['username','email','password', 'password2', 'is_vendor', 'is_rider', 'is_client']
         extra_kwargs={
             'password':{'write_only':True}
         }
@@ -28,6 +28,7 @@ class SignupSerializer(serializers.ModelSerializer):
         user.set_password(password)
         user.is_vendor=self.validated_data['is_vendor']
         user.is_rider=self.validated_data['is_rider']
+        user.is_client=self.validated_data['is_client']
         # user.is_vendor= True
         user.save()
         return user

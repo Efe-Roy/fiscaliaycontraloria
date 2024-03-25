@@ -57,6 +57,7 @@ class CustomAuthToken(ObtainAuthToken):
         return Response({
             "token": token.key,
             "is_vendor": user.is_vendor,
+            "is_client": user.is_client,
             "is_rider": user.is_rider,
             "is_admin": user.is_admin,
             "user_id": user.id
@@ -85,6 +86,10 @@ class UserListView(generics.ListAPIView):
         is_vendor = self.request.query_params.get('is_vendor', False)
         if is_vendor:
             queryset = queryset.filter(is_vendor=is_vendor)
+
+        is_client = self.request.query_params.get('is_client', False)
+        if is_client:
+            queryset = queryset.filter(is_client=is_client)
 
         is_rider = self.request.query_params.get('is_rider', False)
         if is_rider:
