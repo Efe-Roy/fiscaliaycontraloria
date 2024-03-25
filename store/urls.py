@@ -6,7 +6,7 @@ from .views import (
     CreateCouponView, CouponDetailView, OrderListView, AddressDefaultAPIView,
 
     AddressListView, AddressCreateView, AddressUpdateView, AddressDeleteView,
-    OrderItemDeleteView, OrderItemListView, PaymentListView, PaymentView
+    OrderItemDeleteView, OrderItemListView, OrderUpdateView, PaymentListView, PaymentView
 )
 
 urlpatterns = [
@@ -36,5 +36,6 @@ urlpatterns = [
     path('order-item/update-quantity/<pk>/', OrderQuantityUpdateView.as_view()),
     
     path('order-list/', OrderListView.as_view()),
+    path('order/<pk>/update/', OrderUpdateView.as_view()),
     path('payments/', PaymentListView.as_view(), name='payment-list'),
 ]

@@ -122,7 +122,6 @@ class Payment(models.Model):
     def __str__(self):
         return self.user.username
 
-
 class Coupon(models.Model):
     code = models.CharField(max_length=15)
     amount = models.FloatField()
@@ -130,7 +129,6 @@ class Coupon(models.Model):
 
     def __str__(self):
         return self.code
-
 
 class Refund(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)

@@ -286,8 +286,12 @@ class OrderDetailView(RetrieveAPIView):
             raise Http404("You do not have an active order")
             # return Response({"message": "You do not have an active order"}, status=HTTP_400_BAD_REQUEST)
 
-class PaymentView(APIView):
+class OrderUpdateView(UpdateAPIView):
+    permission_classes = (IsAuthenticated, )
+    serializer_class = OrderSerializer
+    queryset = Order.objects.all()
 
+class PaymentView(APIView):
     def post(self, request, *args, **kwargs):
         user = self.request.user
         order = Order.objects.get(user=user, ordered=False)
@@ -322,7 +326,6 @@ class PaymentView(APIView):
 
         return Response({"message": "Your order was successful!"} ,status=HTTP_200_OK)
         
-    
 class CreateCouponView(APIView):
     def get(self, request, format=None):
         queryset = Coupon.objects.all()
