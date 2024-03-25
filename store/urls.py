@@ -36,6 +36,6 @@ urlpatterns = [
     path('order-item/update-quantity/<pk>/', OrderQuantityUpdateView.as_view()),
     
     path('order-list/', OrderListView.as_view()),
-    path('order/<pk>/update/', OrderUpdateView.as_view()),
+    path('order/<pk>/', OrderUpdateView.as_view()),
     path('payments/', PaymentListView.as_view(), name='payment-list'),
 ]

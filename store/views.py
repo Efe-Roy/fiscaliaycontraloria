@@ -289,8 +289,9 @@ class OrderDetailView(RetrieveAPIView):
 class OrderUpdateView(APIView):
     def get(self, request, pk, format=None):
         instance = Order.objects.get(id=pk)
-        serializer = OrderSerializer(instance)
-        return Response(serializer.data)
+        instance.rider = self.request.user
+        instance.save()
+        return Response({"message": "Your order was successful!"} ,status=HTTP_200_OK)
     
 class PaymentView(APIView):
     def post(self, request, *args, **kwargs):
