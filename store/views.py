@@ -241,7 +241,7 @@ class OrderListView(ListCreateAPIView):
             
         ordered = self.request.query_params.get('ordered', None)
         if ordered:
-            queryset = queryset.filter(ordered=ordered)
+            queryset = queryset.filter(ordered=True)
         
         return queryset
     
