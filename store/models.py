@@ -71,7 +71,7 @@ class OrderItem(models.Model):
 
 class Order(models.Model):
     rider = models.OneToOneField(User, related_name='rider', on_delete=models.SET_NULL, blank=True, null=True, limit_choices_to={'is_rider': True})
-    user = models.ForeignKey(User, on_delete=models.CASCADE, limit_choices_to={'is_vendor': False})
+    user = models.ForeignKey(User, on_delete=models.CASCADE, limit_choices_to={'is_client': True})
     shop = models.ForeignKey(Shop, on_delete=models.CASCADE, blank=True, null=True)
     ref_code = models.CharField(max_length=20, blank=True, null=True)
     items = models.ManyToManyField(OrderItem)
