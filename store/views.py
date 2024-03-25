@@ -286,11 +286,12 @@ class OrderDetailView(RetrieveAPIView):
             raise Http404("You do not have an active order")
             # return Response({"message": "You do not have an active order"}, status=HTTP_400_BAD_REQUEST)
 
-class OrderUpdateView(UpdateAPIView):
-    permission_classes = (IsAuthenticated, )
-    serializer_class = OrderSerializer
-    queryset = Order.objects.all()
-
+class OrderUpdateView(APIView):
+    def get(self, request, pk, format=None):
+        instance = Order.objects.get(id=pk)
+        serializer = OrderSerializer(instance)
+        return Response(serializer.data)
+    
 class PaymentView(APIView):
     def post(self, request, *args, **kwargs):
         user = self.request.user
