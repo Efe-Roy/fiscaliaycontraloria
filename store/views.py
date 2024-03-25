@@ -234,6 +234,10 @@ class OrderListView(ListCreateAPIView):
         user_id_2 = self.request.query_params.get('user_id_2', None)
         if user_id_2:
             queryset = queryset.filter(user_id=user_id_2)
+            
+        rider_id = self.request.query_params.get('rider_id', None)
+        if rider_id:
+            queryset = queryset.filter(rider_id=rider_id)
         
         return queryset
 

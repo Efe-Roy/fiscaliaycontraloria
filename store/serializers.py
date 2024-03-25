@@ -70,7 +70,9 @@ class OrderSerializer(serializers.ModelSerializer):
             'order_items',
             'total',
             'ordered',
-            'coupon'
+            'coupon',
+            'being_delivered',
+            'received'
         )
 
     def get_order_items(self, obj):
