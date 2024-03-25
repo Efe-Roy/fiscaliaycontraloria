@@ -70,6 +70,7 @@ class OrderItem(models.Model):
         return self.get_total_item_price()
 
 class Order(models.Model):
+    rider = models.OneToOneField(User, related_name='rider', on_delete=models.SET_NULL, blank=True, null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     shop = models.ForeignKey(Shop, on_delete=models.CASCADE, blank=True, null=True)
     ref_code = models.CharField(max_length=20, blank=True, null=True)
