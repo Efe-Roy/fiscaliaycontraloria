@@ -224,7 +224,7 @@ class OrderListView(ListCreateAPIView):
     pagination_class = CustomPagination
 
     def get_queryset(self):
-        queryset = Order.objects.all().order_by("-id")
+        queryset = Order.objects.all()
 
         # Filter based on request parameters
         user_id = self.request.query_params.get('user_id', None)
@@ -240,6 +240,35 @@ class OrderListView(ListCreateAPIView):
             queryset = queryset.filter(rider_id=rider_id)
         
         return queryset
+    
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+
+        being_delivered = queryset.filter(being_delivered=True).count()
+        received = queryset.filter(received=True).count()
+
+        # Order the queryset by id
+        queryset = queryset.order_by('-id')
+
+        # Paginate the queryset
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            response_data = {
+                'results': serializer.data,
+                'being_delivered': being_delivered,
+                'received': received,
+            }
+            return self.get_paginated_response(response_data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        response_data = {
+            'results': serializer.data,
+            'being_delivered': being_delivered,
+            'received': received,
+        }
+
+        return Response(response_data)
 
 class OrderDetailView(RetrieveAPIView):
     serializer_class = OrderSerializer
