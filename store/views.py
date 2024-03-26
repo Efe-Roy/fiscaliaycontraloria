@@ -258,6 +258,7 @@ class OrderListView(ListCreateAPIView):
 
         being_delivered = queryset.filter(being_delivered=True).count()
         received = queryset.filter(received=True).count()
+        all_count = queryset.count()
 
         # Order the queryset by id
         queryset = queryset.order_by('-id')
@@ -270,6 +271,7 @@ class OrderListView(ListCreateAPIView):
                 'results': serializer.data,
                 'being_delivered': being_delivered,
                 'received': received,
+                'all_count': all_count,
             }
             return self.get_paginated_response(response_data)
 
@@ -278,6 +280,7 @@ class OrderListView(ListCreateAPIView):
             'results': serializer.data,
             'being_delivered': being_delivered,
             'received': received,
+            'all_count': all_count,
         }
 
         return Response(response_data)
