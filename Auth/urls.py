@@ -1,7 +1,7 @@
 from .views import SignupView
 from django.urls import path, include
 from .views import (
-    CustomAuthToken, UserListView, UserDetailView, 
+    CustomAuthToken, UserListView, UserDetailView, UserDetailView2, 
     CheckAuthenticatedView, ChangePasswordView, LogoutView,
     DepositView, WithdrawView, TransferView
     # get_all_team, UserProfileDetail,
@@ -17,6 +17,7 @@ urlpatterns = [
     path('api/rest-auth/login/', CustomAuthToken.as_view(), name ='auth-token'),
     path('api/userlist/', UserListView.as_view()),
     path('api/user-detail/', UserDetailView.as_view()),
+    path('api/user-detail/<pk>/', UserDetailView2.as_view()),
     path('api/rest-auth/change-password/', ChangePasswordView.as_view()),
     path('api/auth/logout', LogoutView.as_view()),
 

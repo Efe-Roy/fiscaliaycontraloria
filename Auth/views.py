@@ -103,6 +103,12 @@ class UserDetailView(APIView):
         queryset = User.objects.get(id=user.id)
         serializer = UserSerializer(queryset)
         return Response( serializer.data)
+    
+class UserDetailView2(APIView):
+    def get(self, request, pk, format=None):
+        queryset = User.objects.get(id=pk)
+        serializer = UserSerializer(queryset)
+        return Response( serializer.data)
 
 class ChangePasswordView(APIView):
     permission_classes = (IsAuthenticated,)
