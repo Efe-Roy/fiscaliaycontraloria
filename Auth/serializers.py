@@ -1,11 +1,19 @@
 from rest_framework import serializers
 from .models import User
+from store.models import Address
+from store.serializers import AddressSerializer
 
 class UserSerializer(serializers.ModelSerializer):
+    address = serializers.SerializerMethodField()
    
     class Meta:
         model=User
-        fields= ['id', 'username', 'email', 'is_vendor', 'is_rider', 'is_client', 'is_active', 'acc_balance', 'image']
+        fields= ['id', 'username', 'email', 'is_vendor', 'is_rider', 'is_client', 'is_active', 'acc_balance', 'image', 'address']
+
+    def get_address(self, obj):
+        user_addresses = Address.objects.filter(user=obj)
+        serializer = AddressSerializer(instance=user_addresses, many=True)
+        return serializer.data
         
 class SignupSerializer(serializers.ModelSerializer):
     password2=serializers.CharField(style={"input_type":"password"}, write_only=True)
