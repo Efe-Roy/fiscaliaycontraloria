@@ -4,6 +4,7 @@ from Auth.serializers import UserSerializer
 from .models import (
     Address, Item, Order, OrderItem, Coupon, Payment, Shop, Category
 )
+from Auth.models import User
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -26,14 +27,20 @@ class ItemSerializer(serializers.ModelSerializer):
         return ShopSerializer(obj.shop).data
 
 class ShopSerializer(serializers.ModelSerializer):
+    address = serializers.SerializerMethodField()
     user = serializers.SerializerMethodField()
 
     class Meta:
         model = Shop
-        fields = "__all__"
+        fields = ['id', 'user', 'name', 'image', 'description', 'stars', 'reviews', 'address']
 
     def get_user(self, obj):
         return UserSerializer(obj.user).data
+    
+    def get_address(self, obj):
+        user_addresses = Address.objects.filter(user=obj.user)
+        serializer = AddressSerializer(instance=user_addresses, many=True)
+        return serializer.data
 
         
 class OrderItemSerializer(serializers.ModelSerializer):
