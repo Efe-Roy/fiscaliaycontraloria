@@ -305,6 +305,13 @@ class OrderUpdateView(APIView):
         instance.save()
         return Response({"message": "Order successfully assigned to you!"} ,status=HTTP_200_OK)
     
+    def put(self, request, pk, format=None):
+        instance = Order.objects.get(id=pk)
+        instance.being_delivered = False
+        instance.received = True
+        instance.save()
+        return Response({"message": "Order successfully completed!"} ,status=HTTP_200_OK)
+
 class PaymentView(APIView):
     def post(self, request, *args, **kwargs):
         user = self.request.user
